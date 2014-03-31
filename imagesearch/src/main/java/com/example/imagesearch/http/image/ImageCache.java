@@ -4,14 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Picture;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
 import android.util.LruCache;
 
-import com.example.imagesearch.R;
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGBuilder;
 
@@ -43,7 +41,7 @@ public class ImageCache {
     private static String TAG = "ImageCache";
     private static int DEFAULT_SAMPLE_SIZE = 3;
     private static int CACHE_SIZE = 8 * 1024 * 1024; // 8MiB
-    private static ExecutorService sThreadPool = Executors.newCachedThreadPool();
+    private static ExecutorService POOL = Executors.newCachedThreadPool();
     private static ImageCache DEFAULT = null;
 
     private static HashMap<Pattern, String> sPatternMap = null;
@@ -106,12 +104,13 @@ public class ImageCache {
     public Bitmap get(String url) {
         Bitmap bitmap = mURLtoBitmapCache.get(url); // cache
 
-        if (bitmap != null) {
-            Log.d(TAG, "Cache hit: " + url);
+        if (bitmap != null) { // cache hit
         } else if (mURLtoFileMap.containsKey(url)) { // file cache
             Log.d(TAG, "Cache file-hit: " + url);
             bitmap = bitmapFromFile(mURLtoFileMap.get(url), DEFAULT_SAMPLE_SIZE);
-            mURLtoBitmapCache.put(url, bitmap);
+            if (bitmap != null) {
+                mURLtoBitmapCache.put(url, bitmap);
+            }
         } else {
             Log.d(TAG, "Cache miss: " + url);
             bitmap = null;
@@ -151,29 +150,6 @@ public class ImageCache {
         }
 
         return bitmap;
-    }
-
-    private int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
     }
 
     /* fileFor(string)
@@ -309,7 +285,7 @@ public class ImageCache {
     executes the import via thread pool
  */
     private void importInBackground() {
-        sThreadPool.submit(new Runnable() {
+        POOL.submit(new Runnable() {
             @Override
             public void run() {
                 importSavedURLs();
@@ -338,7 +314,7 @@ public class ImageCache {
 
     /* pictureDrawable2Bitmap
 
-        converts a picture into a bitmap
+        converts a picture into a bitmap. used with serializeSVG
      */
     private static Bitmap pictureDrawable2Bitmap(Picture picture) {
         PictureDrawable pd = new PictureDrawable(picture);
@@ -352,13 +328,12 @@ public class ImageCache {
         Bitmap bitmap = null;
 
         try {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = sampleSize;
-                bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-                if (bitmap == null && getExtension(file.getName()).equals(".svg")) {
-                    bitmap = serializeSVG(file);
-                }
-
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = sampleSize;
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+            if (bitmap == null && getExtension(file.getName()).equals(".svg")) {
+                bitmap = serializeSVG(file);
+            }
         } catch(Exception e) {
             Log.e(TAG, "Failed to decode image file: " + e.getMessage());
         }
@@ -388,6 +363,30 @@ public class ImageCache {
         }
 
         return extension;
+    }
+
+
+    private static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 
 }

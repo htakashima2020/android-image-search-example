@@ -10,18 +10,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Delayed;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by mark on 3/28/14.
  */
 public class GoogleImageApiRequest implements Callable<ArrayList<String>> {
 
-    final static private String TAG = "GoogleImageAPIRequest";
-
-    final static private String version = "1.0";
-    final static private HTTPClient client = new HTTPClient("https://ajax.googleapis.com/ajax/services/search");
+    private static String TAG = "GoogleImageAPIRequest";
+    private static String VERSION = "1.0";
+    private static HTTPClient CLIENT = new HTTPClient("https://ajax.googleapis.com/ajax/services/search");
 
     private Date createdAt;
     private int offset, resultCount;
@@ -46,12 +43,8 @@ public class GoogleImageApiRequest implements Callable<ArrayList<String>> {
         ArrayList<String> list = null;
 
         try {
-            HTTPRequest request = client.GET("/images", optionDictionary, new GoogleImageHTTPStreamReader());
-            list = new ArrayList<String>();
-            String[] urls = (String[])request.getResponse().getData();
-            for(String url : urls) {
-                list.add(url);
-            }
+            HTTPRequest request = CLIENT.GET("/images", optionDictionary, new GoogleImageHTTPStreamReader());
+            list = (ArrayList<String>)request.getResponse().getData();
         } catch(Exception e) {
             Log.e(TAG, "Failed to get URLs.. " + e.getMessage());
         }
@@ -63,7 +56,7 @@ public class GoogleImageApiRequest implements Callable<ArrayList<String>> {
         optionDictionary = new ConcurrentHashMap<String, String>();
         optionDictionary.put("rsz", new Integer(resultCount).toString());
         optionDictionary.put("start", new Integer(offset).toString());
-        optionDictionary.put("v", version);
+        optionDictionary.put("v", VERSION);
         optionDictionary.put("q", query);
     }
 

@@ -60,9 +60,7 @@ public class GoogleImageHTTPStreamReader extends HTTPStreamReader {
         }
 
         Log.i(TAG, "Got urls: \n" + urls);
-        String[] contents = new String[urls.size()];
-        urls.toArray(contents);
 
-        return contents;
+        return urls;
     }
 }

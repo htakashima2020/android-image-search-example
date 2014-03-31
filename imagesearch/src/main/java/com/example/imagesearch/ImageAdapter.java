@@ -108,7 +108,7 @@ public class ImageAdapter extends BaseAdapter {
 
     private String mActiveQuery;
     private Context mContext;
-    private String[] urls = new String[0];
+    private ArrayList<String> urls = new ArrayList<String>();
     private int mOffset = 0;
 
     public ImageAdapter(Context c) {
@@ -131,7 +131,7 @@ public class ImageAdapter extends BaseAdapter {
         for(ImageDownload download : mURLDownloadMap.values()) {
             download.cancel();
         }
-        urls = new String[0];
+        urls = new ArrayList<String>();
         mURLDownloadMap = new HashMap<String, ImageDownload>();
         mRequestHashMap = new HashMap<String, HTTPRequest>();
         mURLViewHolderMap = new HashMap<String, CellViewHolder>();
@@ -142,11 +142,11 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return urls.length;
+        return urls.size();
     }
 
     public Object getItem(int index) {
-        return urls[index];
+        return urls.get(index);
     }
 
     public long getItemId(int index) {
@@ -160,8 +160,7 @@ public class ImageAdapter extends BaseAdapter {
         GoogleImageAPI.fetchResults(query, mOffset, new GoogleImageAPIListener() {
             @Override
             public void gotNewURLs(ArrayList<String> urls) {
-                ImageAdapter.this.urls = new String[urls.size()];
-                urls.toArray(ImageAdapter.this.urls);
+                ImageAdapter.this.urls = urls;
                 mMainThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -174,20 +173,10 @@ public class ImageAdapter extends BaseAdapter {
 
     public void nextPage() throws Exception {
 
-        GoogleImageAPI.fetchResults(mActiveQuery, this.urls.length, new GoogleImageAPIListener() {
+        GoogleImageAPI.fetchResults(mActiveQuery, this.urls.size(), new GoogleImageAPIListener() {
             @Override
             public void gotNewURLs(ArrayList<String> urls) {
-                ArrayList<String> allURLs = new ArrayList<String>(ImageAdapter.this.urls.length + urls.size());
-                for(String url : ImageAdapter.this.urls) {
-                    allURLs.add(url);
-                }
-                for (String url : urls) {
-                    allURLs.add(url);
-                }
-
-
-                ImageAdapter.this.urls = new String[allURLs.size()];
-                allURLs.toArray(ImageAdapter.this.urls);
+                ImageAdapter.this.urls.addAll(urls);
                 mMainThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -201,11 +190,11 @@ public class ImageAdapter extends BaseAdapter {
 
     }
 
-    public String[] getUrls() {
+    public ArrayList<String> getUrls() {
         return urls;
     }
 
-    public void setUrls(String[] urls) {
+    public void setUrls(ArrayList<String> urls) {
         this.urls = urls;
     }
 
@@ -241,7 +230,7 @@ public class ImageAdapter extends BaseAdapter {
             oldImageDownload.setDownloadListener(null);
         }
 
-        String url = urls[position];
+        String url = urls.get(position);
         container.progressBar.setProgress(0);
         if (ImageCache.DefaultCache().isCached(url)) { // cached image
             container.progressBar.setProgress(container.progressBar.getMax());

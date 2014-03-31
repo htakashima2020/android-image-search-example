@@ -78,11 +78,13 @@ public class ImageSearchActivity extends ActionBarActivity {
 
         // check to see if we have an active query otherwise just handle search intent
         if (savedInstanceState != null) {
-            mImageAdapter.setUrls(savedInstanceState.getStringArray(KEY_ADAPTER_URLS));
-            getActionBar().setSubtitle(savedInstanceState.getString(KEY_ACTIVE_SEARCH));
+            mActiveQuery = savedInstanceState.getString(KEY_ACTIVE_SEARCH);
+            mImageAdapter.setActiveQuery(mActiveQuery);
+            getActionBar().setSubtitle(mActiveQuery);
+
+            mImageAdapter.setUrls(savedInstanceState.getStringArrayList(KEY_ADAPTER_URLS));
             mGridView.scrollTo(0, savedInstanceState.getInt(KEY_GRIDVIEW_POSITION));
             mImageAdapter.notifyDataSetInvalidated();
-            mImageAdapter.setActiveQuery(savedInstanceState.getString(KEY_ACTIVE_SEARCH));
 
         } else {
             handleIntent(getIntent());
@@ -93,10 +95,9 @@ public class ImageSearchActivity extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
 
-        bundle.putStringArray(KEY_ADAPTER_URLS, mImageAdapter.getUrls());
+        bundle.putStringArrayList(KEY_ADAPTER_URLS, mImageAdapter.getUrls());
         bundle.putString(KEY_ACTIVE_SEARCH, mActiveQuery);
         bundle.putInt(KEY_GRIDVIEW_POSITION, mGridView.getScrollY());
-
     }
 
     @Override
@@ -145,7 +146,7 @@ public class ImageSearchActivity extends ActionBarActivity {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String url = mImageAdapter.getUrls()[i];
+                String url = (String)adapterView.getItemAtPosition(i);
                 ImageSearchActivity.this.zoomImageFromThumb(view, url);
             }
         });
