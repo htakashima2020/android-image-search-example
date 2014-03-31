@@ -130,7 +130,7 @@ public class HTTPRequestListenerTest extends InstrumentationTestCase {
             }
         });
         httpResponse = request.getResponse();
-        assertTrue(numTimesRcvdProgress[0] > 5);
+        assertTrue(numTimesRcvdProgress[0] > 2);
         assertTrue(canReceiveProgress[0]);
         assertTrue(lastProgress[0] > 0.50 && lastProgress[0] <= 1.00);
         assertEquals(200, httpResponse.getStatusCode());

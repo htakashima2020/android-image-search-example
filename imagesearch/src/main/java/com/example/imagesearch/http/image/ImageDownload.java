@@ -53,6 +53,10 @@ public class ImageDownload implements Runnable {
     private boolean mCheckCache;
     private HTTPRequest mRequest;
 
+    public static ImageDownload get(String url) {
+        return ImageDownload.get(url, null);
+    }
+
     public static ImageDownload get(String url, ImageDownloadListener listener) {
         return ImageDownload.get(url, true, listener);
     }
@@ -112,6 +116,11 @@ public class ImageDownload implements Runnable {
     public Bitmap getBitmap() {
         Bitmap bitmap = null;
         if (isFinished()) {
+            try {
+                mRequest.getResponse();
+            } catch (Exception e) {
+                Log.e(TAG, "Got exception waiting for response.. " + e.getMessage());
+            }
             bitmap = ImageCache.DefaultCache().get(mURL);
         }
 

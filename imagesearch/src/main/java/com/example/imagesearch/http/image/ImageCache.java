@@ -82,7 +82,10 @@ public class ImageCache {
     public void cache(final String url, final File file) {
         // create local file mapping
         mURLtoFileMap.put(url, file);
-        mURLtoBitmapCache.put(url, bitmapFromFile(file, DEFAULT_SAMPLE_SIZE));
+        Bitmap bitmap = bitmapFromFile(file, DEFAULT_SAMPLE_SIZE);
+        if (bitmap != null) {
+            mURLtoBitmapCache.put(url, bitmap);
+        }
     }
 
     /* isCached(url)
@@ -348,7 +351,7 @@ public class ImageCache {
     private static String getExtension(String string) {
         if (sPatternMap == null) {
             sPatternMap = new HashMap<Pattern, String>();
-            sPatternMap.put(Pattern.compile(".*\\.jpg"), ".jpg");
+            sPatternMap.put(Pattern.compile(".*\\.jpe?g"), ".jpg");
             sPatternMap.put(Pattern.compile(".*\\.png"), ".png");
             sPatternMap.put(Pattern.compile(".*\\.svg"), ".svg");
             sPatternMap.put(Pattern.compile(".*\\.gif"), ".gif");

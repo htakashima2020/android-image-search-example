@@ -6,6 +6,7 @@ import com.example.imagesearch.http.HTTPClient;
 import com.example.imagesearch.http.HTTPRequest;
 import com.example.imagesearch.http.reader.GoogleImageHTTPStreamReader;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -23,8 +24,8 @@ public class GoogleImageHTTPStreamReaderTest extends InstrumentationTestCase {
 
         GoogleImageHTTPStreamReader googleImageReader = new GoogleImageHTTPStreamReader();
         HTTPRequest request = Client.GET("/images", options, googleImageReader);
-        String[] urls = (String[])request.getResponse().getData();
+        ArrayList<String> urls = (ArrayList<String>)request.getResponse().getData();
 
-        assertTrue(String.format("URLs length should not be empty got %s", urls.length), urls.length == 8);
+        assertTrue(String.format("URLs length should not be empty got %s", urls.size()), urls.size() == 8);
     }
 }
