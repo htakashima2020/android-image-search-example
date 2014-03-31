@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Image Search</string>
+    <string name="search_bar_query_hint">Search for images...</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="search_suggestion_authority">com.example.imagesearch.RecentSuggestionProvider</string>
+
+</resources>
