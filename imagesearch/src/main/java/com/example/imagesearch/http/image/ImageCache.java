@@ -39,11 +39,11 @@ import java.util.regex.Pattern;
 public class ImageCache {
 
     private static String TAG = "ImageCache";
-    private static int DEFAULT_SAMPLE_SIZE = 3;
-    private static int CACHE_SIZE = 8 * 1024 * 1024; // 8MiB
+    private static int DEFAULT_SAMPLE_SIZE = 4;
+    private static int CACHE_SIZE = 4 * 1024 * 1024; // 4MiB
     private static ExecutorService POOL = Executors.newCachedThreadPool();
-    private static ImageCache DEFAULT = null;
 
+    private static ImageCache DEFAULT = null;
     private static HashMap<Pattern, String> sPatternMap = null;
     public static File CacheDirectory;
 
@@ -70,7 +70,7 @@ public class ImageCache {
         mSavedURLsFilename = mName + "-cache.json";
         mSavedURLsPath = mSavedURLsDirectory + "/" + mSavedURLsFilename;
         mURLtoBitmapCache = new LruCache<String, Bitmap>(CACHE_SIZE);
-        mURLtoHighQualityBitmapCache = new LruCache<String, Bitmap>(CACHE_SIZE / 4);
+        mURLtoHighQualityBitmapCache = new LruCache<String, Bitmap>(CACHE_SIZE / 4); //1mb
         setupExportTimerTask();
         importSavedURLs();
     }
@@ -149,6 +149,7 @@ public class ImageCache {
             // store in cache
             if (bitmap != null) {
                 mURLtoHighQualityBitmapCache.put(url, bitmap);
+                mURLtoHighQualityBitmapCache.trimToSize(2);
             }
         }
 
@@ -281,19 +282,6 @@ public class ImageCache {
         } catch(Exception e) {
             Log.e(TAG, "Failed to read in URLs => File mapping:\n" + e.getMessage());
         }
-    }
-
-    /* importInBackground
-
-    executes the import via thread pool
- */
-    private void importInBackground() {
-        POOL.submit(new Runnable() {
-            @Override
-            public void run() {
-                importSavedURLs();
-            }
-        });
     }
 
 
