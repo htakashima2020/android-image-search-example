@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.imagesearch.http.HTTPClient;
-import com.example.imagesearch.http.HTTPRequest;
 import com.example.imagesearch.http.image.ImageCache;
 import com.example.imagesearch.http.image.ImageDownload;
 import com.example.imagesearch.http.image.ImageDownloadListener;
@@ -35,10 +34,6 @@ public class ImageAdapter extends BaseAdapter {
     private class ImageCellDownloadListener implements ImageDownloadListener {
         private ImageAdapter.CellViewHolder mCellViewHolder;
 
-        public void setCellViewHolder(ImageAdapter.CellViewHolder cellViewHolder) {
-            mCellViewHolder = cellViewHolder;
-        }
-
         public ImageCellDownloadListener(ImageAdapter.CellViewHolder cellViewHolder) {
             mCellViewHolder = cellViewHolder;
         }
@@ -59,7 +54,6 @@ public class ImageAdapter extends BaseAdapter {
                     mCellViewHolder.progressBar.setProgress(0);
                     mCellViewHolder.progressBar.setVisibility(View.INVISIBLE);
                     mCellViewHolder.imageView.setVisibility(View.VISIBLE);
-                    //                                ((GridLayout)container.progressBar.getParent()).removeView(container.progressBar);
                     mCellViewHolder.imageView.setImageBitmap(bitmap);
                     mCellViewHolder.imageView.invalidate();
 
@@ -98,12 +92,8 @@ public class ImageAdapter extends BaseAdapter {
     private final static HTTPClient Client = new HTTPClient("https://ajax.googleapis.com/ajax/services/search");
     private final static GoogleImageAPI Api = new GoogleImageAPI();
 
-    private HashMap<String, HTTPRequest>mRequestHashMap;
-    private HashMap<String, CellViewHolder> mURLViewHolderMap;
     private HashMap<String, Bitmap>mURLBitmapMap;
     private HashMap<String, ImageDownload>mURLDownloadMap;
-    private HashMap<CellViewHolder, ImageDownloadListener>mCellViewHolderImageDownloadListenerMap;
-    private HashMap<String, ImageDownloadListener>mURLImageDownloadListenerMap;
     private HashMap<CellViewHolder, ImageDownload>mActiveImageDownloadListenerMap;
 
     private String mActiveQuery;
@@ -112,11 +102,8 @@ public class ImageAdapter extends BaseAdapter {
     private int mOffset = 0;
 
     public ImageAdapter(Context c) {
-        mRequestHashMap = new HashMap<String, HTTPRequest>();
-        mURLViewHolderMap = new HashMap<String, CellViewHolder>();
         mURLBitmapMap = new HashMap<String, Bitmap>();
         mURLDownloadMap = new HashMap<String, ImageDownload>();
-        mCellViewHolderImageDownloadListenerMap = new HashMap<CellViewHolder, ImageDownloadListener>();
         mActiveImageDownloadListenerMap = new HashMap<CellViewHolder, ImageDownload>();
 
         mContext = c;
@@ -133,8 +120,6 @@ public class ImageAdapter extends BaseAdapter {
         }
         urls = new ArrayList<String>();
         mURLDownloadMap = new HashMap<String, ImageDownload>();
-        mRequestHashMap = new HashMap<String, HTTPRequest>();
-        mURLViewHolderMap = new HashMap<String, CellViewHolder>();
         mURLBitmapMap = new HashMap<String, Bitmap>();
         mActiveImageDownloadListenerMap = new HashMap<CellViewHolder, ImageDownload>();
 
@@ -244,6 +229,7 @@ public class ImageAdapter extends BaseAdapter {
                 Log.e(TAG, "Could not get bitmap from URL: " + url);
                 container.imageView.setVisibility(View.VISIBLE);
                 container.imageView.setImageResource(R.drawable.warning_icon);
+                container.progressBar.setVisibility(View.INVISIBLE);
             }
             container.imageView.invalidate();
         } else if (!mURLDownloadMap.containsKey(url)) { // new image download
