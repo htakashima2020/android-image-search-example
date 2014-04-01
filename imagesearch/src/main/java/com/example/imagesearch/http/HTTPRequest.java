@@ -61,7 +61,7 @@ public class HTTPRequest implements Callable<HTTPResponse> {
         // set request method
         connection.setConnectTimeout(timeoutInSeconds * 1000);
         try {
-            connection.setRequestMethod("get");
+            connection.setRequestMethod("GET");
         } catch(ProtocolException e) {
             Log.e(TAG, "Bad protocol: " + e.getMessage());
             listener.didError(e);
