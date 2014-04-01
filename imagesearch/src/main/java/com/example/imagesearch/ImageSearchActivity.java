@@ -52,8 +52,8 @@ public class ImageSearchActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         // configure image cache to use default cache directory
-        ImageCache.CacheDirectory = getCacheDir();
-        ImageCache.DefaultCache();
+        ImageCache.CACHE_DIRECTORY = getCacheDir();
+        ImageCache.defaultCache();
 
         // layout entire activity
         setContentView(R.layout.activity_image_search);
@@ -157,7 +157,7 @@ public class ImageSearchActivity extends ActionBarActivity {
         // Load the high-resolution "zoomed-in" image.
         final ImageView expandedImageView = (ImageView) findViewById(
                 R.id.expandedImageView);
-        expandedImageView.setImageBitmap(ImageCache.DefaultCache().getHighQuality(url, mContainer.getHeight(), mContainer.getWidth()));
+        expandedImageView.setImageBitmap(ImageCache.defaultCache().getHighQuality(url, mContainer.getHeight(), mContainer.getWidth()));
 
         // Calculate the starting and ending bounds for the zoomed-in image.
         // This step involves lots of math. Yay, math.

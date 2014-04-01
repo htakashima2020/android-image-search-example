@@ -1,10 +1,6 @@
 package com.example.imagesearch.http.image;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Picture;
-import android.graphics.drawable.PictureDrawable;
 import android.util.Log;
 
 import com.example.imagesearch.http.HTTPClient;
@@ -12,19 +8,11 @@ import com.example.imagesearch.http.HTTPRequest;
 import com.example.imagesearch.http.HTTPRequestListener;
 import com.example.imagesearch.http.HTTPResponse;
 import com.example.imagesearch.http.reader.ImageHTTPStreamReader;
-import com.larvalabs.svgandroid.SVG;
-import com.larvalabs.svgandroid.SVGBuilder;
-import com.larvalabs.svgandroid.SVGParseException;
-import com.larvalabs.svgandroid.SVGParser;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by mark on 3/24/14.
@@ -121,7 +109,7 @@ public class ImageDownload implements Runnable {
             } catch (Exception e) {
                 Log.e(TAG, "Got exception waiting for response.. " + e.getMessage());
             }
-            bitmap = ImageCache.DefaultCache().get(mURL);
+            bitmap = ImageCache.defaultCache().get(mURL);
         }
 
         return bitmap;
@@ -142,19 +130,19 @@ public class ImageDownload implements Runnable {
      */
     public void run() {
         // get the file for this url
-        mFile = ImageCache.DefaultCache().fileFor(mURL);
+        mFile = ImageCache.defaultCache().fileFor(mURL);
 
         // check the cache
-        if (ImageCache.DefaultCache().isCached(mURL)) {
+        if (ImageCache.defaultCache().isCached(mURL)) {
             if (mDownloadListener != null) {
-                mDownloadListener.didFinish(ImageCache.DefaultCache().get(mURL));
+                mDownloadListener.didFinish(ImageCache.defaultCache().get(mURL));
                 mState = State.SUCCEEDED;
             }
         } else {
             ImageHTTPStreamReader imageReader = new ImageHTTPStreamReader(mURL);
 
             try {
-                mRequest = sHTTPClient.GET(mURL, null, imageReader, new HTTPRequestListener() {
+                mRequest = sHTTPClient.get(mURL, null, imageReader, new HTTPRequestListener() {
                     @Override
                     public void didReceiveData(byte[] data) {
                         mState = State.DOWNLOADING;
@@ -176,7 +164,7 @@ public class ImageDownload implements Runnable {
                     public void didSucceed(final HTTPResponse response) {
                         mState = State.SUCCEEDED;
                         if (mDownloadListener != null) {
-                            mDownloadListener.didFinish(ImageCache.DefaultCache().get(mURL));
+                            mDownloadListener.didFinish(ImageCache.defaultCache().get(mURL));
                         }
                     }
 
@@ -221,7 +209,7 @@ public class ImageDownload implements Runnable {
 //        ImageHTTPStreamReader imageReader = new ImageHTTPStreamReader(ImageCache.fileFor(url));
 //        HTTPClient client = new HTTPClient();
 //
-//        HTTPRequest request = client.GET(url, null, imageReader, new HTTPRequestListener() {
+//        HTTPRequest request = client.get(url, null, imageReader, new HTTPRequestListener() {
 //            @Override
 //            public void didReceiveData(byte[] data) {
 //

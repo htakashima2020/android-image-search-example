@@ -10,7 +10,7 @@ import com.example.imagesearch.http.HTTPResponse;
 /**
  * HTTPClientTest
  *
- * Basic tests to ensure GET is working properly.
+ * Basic tests to ensure get is working properly.
  *
  * - Can receive a request [ ]
  * - Can receive chunks of a request [ ]
@@ -21,7 +21,7 @@ public class HTTPRequestListenerTest extends InstrumentationTestCase {
     public void testDidSucceed() throws Exception {
         final boolean[] didSucceed = new boolean[1];
         HTTPClient client = new HTTPClient("http://www.google.com", 10); // 10 second timeout
-        HTTPRequest request = client.GET("/", null, new HTTPRequestListener() {
+        HTTPRequest request = client.get("/", null, new HTTPRequestListener() {
             @Override
             public void didReceiveData(byte[] data) {
 
@@ -62,7 +62,7 @@ public class HTTPRequestListenerTest extends InstrumentationTestCase {
         final int[] numTimesRcvdProgress = new int[]{0};
 
         HTTPClient client = new HTTPClient("http://www.google.com", 10); // 10 second timeout
-        HTTPRequest request = client.GET("/", null, new HTTPRequestListener() {
+        HTTPRequest request = client.get("/", null, new HTTPRequestListener() {
 
             @Override
             public void didReceiveData(byte[] data) {
@@ -98,7 +98,7 @@ public class HTTPRequestListenerTest extends InstrumentationTestCase {
         // google's logoo does have a content length..
         final float[] lastProgress = new float[1];
 
-        request = client.GET("/images/srpr/logo11w.png", null, new HTTPRequestListener() {
+        request = client.get("/images/srpr/logo11w.png", null, new HTTPRequestListener() {
             @Override
             public void didReceiveData(byte[] data) {
                 numTimesRcvdProgress[0]++;

@@ -41,11 +41,9 @@ public class ImageCache {
     private static String TAG = "ImageCache";
     private static int DEFAULT_SAMPLE_SIZE = 4;
     private static int CACHE_SIZE = 4 * 1024 * 1024; // 4MiB
-    private static ExecutorService POOL = Executors.newCachedThreadPool();
-
     private static ImageCache DEFAULT = null;
-    private static HashMap<Pattern, String> sPatternMap = null;
-    public static File CacheDirectory;
+    private static HashMap<Pattern, String> PATTERN_MAP = null;
+    public static File CACHE_DIRECTORY;
 
     private File mSavedURLsDirectory;
     private String mName, mSavedURLsFilename, mSavedURLsPath;
@@ -53,10 +51,10 @@ public class ImageCache {
     private LruCache<String, Bitmap> mURLtoBitmapCache;
     private LruCache<String, Bitmap> mURLtoHighQualityBitmapCache;
 
-    /* DefaultCache()
+    /* defaultCache()
         returns the default cache system
      */
-    public static ImageCache DefaultCache() {
+    public static ImageCache defaultCache() {
         if (DEFAULT == null) {
             DEFAULT = new ImageCache("default");
         }
@@ -66,7 +64,7 @@ public class ImageCache {
 
     public ImageCache(String name) {
         mName = name;
-        mSavedURLsDirectory = CacheDirectory;
+        mSavedURLsDirectory = CACHE_DIRECTORY;
         mSavedURLsFilename = mName + "-cache.json";
         mSavedURLsPath = mSavedURLsDirectory + "/" + mSavedURLsFilename;
         mURLtoBitmapCache = new LruCache<String, Bitmap>(CACHE_SIZE);
@@ -191,7 +189,7 @@ public class ImageCache {
 
             Log.d(TAG, "Created filename: " + filename);
 
-            String path = CacheDirectory.getAbsolutePath() + "/" + filename;
+            String path = CACHE_DIRECTORY.getAbsolutePath() + "/" + filename;
             Log.d(TAG, "Using full path: " + path);
             file = new File(path);
             if (!file.exists()) {
@@ -337,18 +335,18 @@ public class ImageCache {
         helper function to get the extension of a filename
      */
     private static String getExtension(String string) {
-        if (sPatternMap == null) {
-            sPatternMap = new HashMap<Pattern, String>();
-            sPatternMap.put(Pattern.compile(".*\\.jpe?g"), ".jpg");
-            sPatternMap.put(Pattern.compile(".*\\.png"), ".png");
-            sPatternMap.put(Pattern.compile(".*\\.svg"), ".svg");
-            sPatternMap.put(Pattern.compile(".*\\.gif"), ".gif");
+        if (PATTERN_MAP == null) {
+            PATTERN_MAP = new HashMap<Pattern, String>();
+            PATTERN_MAP.put(Pattern.compile(".*\\.jpe?g"), ".jpg");
+            PATTERN_MAP.put(Pattern.compile(".*\\.png"), ".png");
+            PATTERN_MAP.put(Pattern.compile(".*\\.svg"), ".svg");
+            PATTERN_MAP.put(Pattern.compile(".*\\.gif"), ".gif");
         }
 
         String extension = ".unk";
-        for (Pattern pattern : sPatternMap.keySet()) {
+        for (Pattern pattern : PATTERN_MAP.keySet()) {
             if (pattern.matcher(string).matches()) {
-                extension = sPatternMap.get(pattern);
+                extension = PATTERN_MAP.get(pattern);
                 break;
             }
         }

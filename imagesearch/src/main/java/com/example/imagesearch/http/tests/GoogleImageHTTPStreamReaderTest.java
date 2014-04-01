@@ -23,7 +23,7 @@ public class GoogleImageHTTPStreamReaderTest extends InstrumentationTestCase {
         options.put("rsz", "8");
 
         GoogleImageHTTPStreamReader googleImageReader = new GoogleImageHTTPStreamReader();
-        HTTPRequest request = Client.GET("/images", options, googleImageReader);
+        HTTPRequest request = Client.get("/images", options, googleImageReader);
         ArrayList<String> urls = (ArrayList<String>)request.getResponse().getData();
 
         assertTrue(String.format("URLs length should not be empty got %s", urls.size()), urls.size() == 8);

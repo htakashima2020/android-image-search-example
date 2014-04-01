@@ -43,7 +43,7 @@ public class GoogleImageApiRequest implements Callable<ArrayList<String>> {
         ArrayList<String> list = null;
 
         try {
-            HTTPRequest request = CLIENT.GET("/images", optionDictionary);
+            HTTPRequest request = CLIENT.get("/images", optionDictionary);
             list = (ArrayList<String>)request.getResponse().getData();
         } catch(Exception e) {
             Log.e(TAG, "Failed to get URLs.. " + e.getMessage());

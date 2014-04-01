@@ -1,18 +1,12 @@
 package com.example.imagesearch.http.reader;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.imagesearch.http.image.ImageCache;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.FileChannel;
 
 /**
  * Created by mark on 3/23/14.
@@ -26,7 +20,7 @@ public class ImageHTTPStreamReader extends HTTPStreamReader {
 
 
     public ImageHTTPStreamReader(String url) {
-        this.file = ImageCache.DefaultCache().fileFor(url);
+        this.file = ImageCache.defaultCache().fileFor(url);
         this.url = url;
 
         try {
@@ -55,7 +49,7 @@ public class ImageHTTPStreamReader extends HTTPStreamReader {
         } catch (IOException ioe) {
             Log.e(TAG, "Got error: " + ioe.getMessage());
         }
-        ImageCache.DefaultCache().cache(url, file);
+        ImageCache.defaultCache().cache(url, file);
 
         return file;
 //        Log.d(TAG, "Creating bitmap from bytes(" + bytes.length + ")");

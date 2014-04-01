@@ -48,7 +48,7 @@ public class HTTPRequest implements Callable<HTTPResponse> {
         // open connection
         try {
             connection = (HttpURLConnection)url.openConnection();
-            Log.d(TAG, "GET " + url + "...");
+            Log.d(TAG, "get " + url + "...");
         } catch(IOException e) {
             Log.e(TAG, "Error opening connection: " + e.getMessage());
             listener.didError(e);
@@ -61,7 +61,7 @@ public class HTTPRequest implements Callable<HTTPResponse> {
         // set request method
         connection.setConnectTimeout(timeoutInSeconds * 1000);
         try {
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("get");
         } catch(ProtocolException e) {
             Log.e(TAG, "Bad protocol: " + e.getMessage());
             listener.didError(e);

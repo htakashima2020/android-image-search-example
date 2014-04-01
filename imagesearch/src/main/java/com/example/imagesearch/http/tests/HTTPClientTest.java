@@ -10,7 +10,7 @@ public class HTTPClientTest extends InstrumentationTestCase {
 
     public void testReceiveDataAsStringByDefault() throws Exception {
         HTTPClient client = new HTTPClient("http://www.google.com");
-        HTTPRequest request = client.GET("/");
+        HTTPRequest request = client.get("/");
         HTTPResponse response = request.getResponse();
         assertEquals(String.class.toString(), response.getData().getClass().toString());
     }

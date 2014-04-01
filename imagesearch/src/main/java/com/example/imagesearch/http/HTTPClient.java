@@ -6,7 +6,6 @@ import com.example.imagesearch.http.reader.HTTPStreamReader;
 import com.example.imagesearch.http.reader.StringHTTPStreamReader;
 
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,8 +17,8 @@ import java.util.concurrent.Future;
 public class HTTPClient {
 
     private static final String TAG = "HTTPClient";
-    private static final ExecutorService threadPool = Executors.newCachedThreadPool();
-    private static final HTTPRequestListener defaultRequestListener = new HTTPRequestListener() {
+    private static final ExecutorService POOL = Executors.newCachedThreadPool();
+    private static final HTTPRequestListener DEFAULT_REQUEST_LISTENER = new HTTPRequestListener() {
         // empty listener
         @Override
         public void didReceiveData(byte[] data) {
@@ -68,36 +67,19 @@ public class HTTPClient {
         this.readerKlass = readerKlass;
     }
 
-
-    public String getBaseUrl() {
-        return baseUrl;
+    public HTTPRequest get(String path) throws Exception {
+        return get(path, null, DEFAULT_REQUEST_LISTENER);
     }
 
-    public int getTimeoutInSeconds() {
-        return timeoutInSeconds;
+    public HTTPRequest get(String path, ConcurrentHashMap<String, String> options) throws Exception {
+        return get(path, options, DEFAULT_REQUEST_LISTENER);
     }
 
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+    public HTTPRequest get(String path, ConcurrentHashMap<String, String> options, HTTPStreamReader reader) throws Exception {
+        return get(path, options, reader, DEFAULT_REQUEST_LISTENER);
     }
 
-    public void setTimeoutInSeconds(int num) {
-        this.timeoutInSeconds = num;
-    }
-
-    public HTTPRequest GET(String path) throws Exception {
-        return GET(path, null, defaultRequestListener);
-    }
-
-    public HTTPRequest GET(String path, ConcurrentHashMap<String, String>options) throws Exception {
-        return GET(path, options, defaultRequestListener);
-    }
-
-    public HTTPRequest GET(String path, ConcurrentHashMap<String, String>options, HTTPStreamReader reader) throws Exception {
-        return GET(path, options, reader, defaultRequestListener);
-    }
-
-    public HTTPRequest GET(String path, ConcurrentHashMap<String, String> options, HTTPStreamReader reader, HTTPRequestListener listener)
+    public HTTPRequest get(String path, ConcurrentHashMap<String, String> options, HTTPStreamReader reader, HTTPRequestListener listener)
             throws Exception {
         if (reader == null) {
             reader = (HTTPStreamReader)readerKlass.newInstance();
@@ -128,15 +110,15 @@ public class HTTPClient {
         URL url = new URL(fullPath);
 
         HTTPRequest request = new HTTPRequest(url, reader, timeoutInSeconds, listener);
-        Future<HTTPResponse> future = threadPool.submit(request);
+        Future<HTTPResponse> future = POOL.submit(request);
         request.setFuture(future);
 
         return request;
     }
 
-    public HTTPRequest GET(String path, ConcurrentHashMap<String, String> options, HTTPRequestListener listener)
+    public HTTPRequest get(String path, ConcurrentHashMap<String, String> options, HTTPRequestListener listener)
             throws Exception {
-        return GET(path, options, null, listener);
+        return get(path, options, null, listener);
     }
 }
 

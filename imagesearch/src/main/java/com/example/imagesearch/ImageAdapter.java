@@ -217,9 +217,9 @@ public class ImageAdapter extends BaseAdapter {
 
         String url = urls.get(position);
         container.progressBar.setProgress(0);
-        if (ImageCache.DefaultCache().isCached(url)) { // cached image
+        if (ImageCache.defaultCache().isCached(url)) { // cached image
             container.progressBar.setProgress(container.progressBar.getMax());
-            Bitmap bitmap = ImageCache.DefaultCache().get(url);
+            Bitmap bitmap = ImageCache.defaultCache().get(url);
             if (bitmap != null) {
                 container.imageView.setVisibility(View.VISIBLE);
                 container.progressBar.setVisibility(View.INVISIBLE);
