@@ -18,7 +18,7 @@ public class GoogleImageApiRequest implements Callable<ArrayList<String>> {
 
     private static String TAG = "GoogleImageAPIRequest";
     private static String VERSION = "1.0";
-    private static HTTPClient CLIENT = new HTTPClient("https://ajax.googleapis.com/ajax/services/search");
+    private static HTTPClient CLIENT = new HTTPClient("https://ajax.googleapis.com/ajax/services/search", 10, GoogleImageHTTPStreamReader.class);
 
     private Date createdAt;
     private int offset, resultCount;
@@ -43,7 +43,7 @@ public class GoogleImageApiRequest implements Callable<ArrayList<String>> {
         ArrayList<String> list = null;
 
         try {
-            HTTPRequest request = CLIENT.GET("/images", optionDictionary, new GoogleImageHTTPStreamReader());
+            HTTPRequest request = CLIENT.GET("/images", optionDictionary);
             list = (ArrayList<String>)request.getResponse().getData();
         } catch(Exception e) {
             Log.e(TAG, "Failed to get URLs.. " + e.getMessage());
