@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.view.MenuItemCompat;
 import android.view.MenuItem;
 import android.support.v7.app.ActionBarActivity;
@@ -25,12 +23,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.provider.SearchRecentSuggestions;
-
 import com.example.imagesearch.http.image.ImageCache;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ImageSearchActivity extends ActionBarActivity {
 
@@ -38,8 +31,6 @@ public class ImageSearchActivity extends ActionBarActivity {
     private static String KEY_ACTIVE_SEARCH = "KEY|ACTIVE_SEARCH";
     private static String KEY_GRIDVIEW_POSITION = "KEY|GRIDVIEW_POSITION";
     private static String KEY_ADAPTER_URLS = "KEY|ADAPTER_URLS";
-    private static String KEY_CACHE_URL_KEYS = "KEY|CACHE_URL_KEYS";
-    private static String KEY_CACHE_URL_PATHS = "KEY|ACHE_URL_KEYS";
     private static int mShortDuration = 200;
 
     private View mContainer;
@@ -154,6 +145,7 @@ public class ImageSearchActivity extends ActionBarActivity {
 
     /* zoomImageFromThumb(thumbView, url)
 
+        see android developer "zoom image"
      */
     private void zoomImageFromThumb(final View thumbView, final String url) {
         // If there's an animation in progress, cancel it
